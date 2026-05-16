@@ -1,0 +1,10 @@
+{"id": "TX-000001", "type": "income", "date": "2026-05-01", "amount": 3000000, "category": "salary", "memo": "5월 급여", "tags": []}
+{"id": "TX-000002", "type": "expense", "date": "2026-05-02", "amount": 850000, "category": "rent", "memo": "월세", "tags": ["fixed"]}
+{"id": "TX-000003", "type": "expense", "date": "2026-05-03", "amount": 15000, "category": "food", "memo": "점심 김치찌개", "tags": ["lunch"]}
+{"id": "TX-000004", "type": "expense", "date": "2026-05-05", "amount": 22000, "category": "transport", "memo": "지하철 정기권", "tags": ["fixed"]}
+{"id": "TX-000005", "type": "expense", "date": "2026-05-08", "amount": 9500, "category": "food", "memo": "저녁 라멘", "tags": ["dinner"]}
+{"id": "TX-000006", "type": "expense", "date": "2026-05-10", "amount": 45000, "category": "etc", "memo": "노트 + 펜 세트", "tags": ["study"]}
+{"id": "TX-000007", "type": "expense", "date": "2026-05-12", "amount": 12000, "category": "food", "memo": "점심 비빔밥", "tags": ["lunch"]}
+{"id": "TX-000008", "type": "expense", "date": "2026-05-14", "amount": 7800, "category": "food", "memo": "커피", "tags": ["cafe"]}
+{"id": "TX-000009", "type": "expense", "date": "2026-05-15", "amount": 28000, "category": "transport", "memo": "택시", "tags": []}
+{"id": "TX-000010", "type": "expense", "date": "2026-05-16", "amount": 18500, "category": "food", "memo": "저녁 분식", "tags": ["dinner"]}

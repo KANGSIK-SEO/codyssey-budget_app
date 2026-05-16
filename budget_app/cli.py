@@ -9,41 +9,58 @@ from .services import BudgetService, validate_date, validate_type, validate_amou
 
 def _parse_args(argv: List[str]) -> argparse.Namespace:
     p = argparse.ArgumentParser(prog="budget_app")
-    p.add_argument("-data-dir", dest="data_dir", default="./data")
+    p.add_argument("-data-dir", "--data-dir", dest="data_dir", default="./data")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     sub.add_parser("add")
 
-    plist = sub.add_parser("list"); plist.add_argument("-limit", type=int, default=10)
+    plist = sub.add_parser("list")
+    plist.add_argument("-limit", "--limit", type=int, default=10)
 
     pse = sub.add_parser("search")
-    pse.add_argument("-from", dest="date_from"); pse.add_argument("-to", dest="date_to")
-    pse.add_argument("-category"); pse.add_argument("-type"); pse.add_argument("-q"); pse.add_argument("-tag")
+    pse.add_argument("-from", "--from", dest="date_from")
+    pse.add_argument("-to", "--to", dest="date_to")
+    pse.add_argument("-category", "--category")
+    pse.add_argument("-type", "--type")
+    pse.add_argument("-q", "--q")
+    pse.add_argument("-tag", "--tag")
 
     psum = sub.add_parser("summary")
-    psum.add_argument("-month", required=True); psum.add_argument("-top", type=int, default=3)
+    psum.add_argument("-month", "--month", required=True)
+    psum.add_argument("-top", "--top", type=int, default=3)
 
-    pbud = sub.add_parser("budget"); pbsub = pbud.add_subparsers(dest="bud_cmd", required=True)
-    pset = pbsub.add_parser("set"); pset.add_argument("-month", required=True)
-    pset.add_argument("-amount", required=True, type=int)
+    pbud = sub.add_parser("budget")
+    pbsub = pbud.add_subparsers(dest="bud_cmd", required=True)
+    pset = pbsub.add_parser("set")
+    pset.add_argument("-month", "--month", required=True)
+    pset.add_argument("-amount", "--amount", required=True, type=int)
 
-    pcat = sub.add_parser("category"); pcs = pcat.add_subparsers(dest="cat_cmd", required=True)
+    pcat = sub.add_parser("category")
+    pcs = pcat.add_subparsers(dest="cat_cmd", required=True)
     pcs.add_parser("list")
     pca = pcs.add_parser("add"); pca.add_argument("name")
     pcr = pcs.add_parser("remove"); pcr.add_argument("name")
 
     pup = sub.add_parser("update")
-    pup.add_argument("-id", dest="tx_id", required=True)
-    pup.add_argument("-date"); pup.add_argument("-type"); pup.add_argument("-category")
-    pup.add_argument("-amount", type=int); pup.add_argument("-memo")
-    pup.add_argument("-tags")  # comma-separated
+    pup.add_argument("-id", "--id", dest="tx_id", required=True)
+    pup.add_argument("-date", "--date")
+    pup.add_argument("-type", "--type")
+    pup.add_argument("-category", "--category")
+    pup.add_argument("-amount", "--amount", type=int)
+    pup.add_argument("-memo", "--memo")
+    pup.add_argument("-tags", "--tags")
 
-    pdel = sub.add_parser("delete"); pdel.add_argument("-id", dest="tx_id", required=True)
+    pdel = sub.add_parser("delete")
+    pdel.add_argument("-id", "--id", dest="tx_id", required=True)
 
-    pexp = sub.add_parser("export"); pexp.add_argument("-out", required=True)
-    pexp.add_argument("-month"); pexp.add_argument("-from", dest="date_from"); pexp.add_argument("-to", dest="date_to")
+    pexp = sub.add_parser("export")
+    pexp.add_argument("-out", "--out", required=True)
+    pexp.add_argument("-month", "--month")
+    pexp.add_argument("-from", "--from", dest="date_from")
+    pexp.add_argument("-to", "--to", dest="date_to")
 
-    pimp = sub.add_parser("import"); pimp.add_argument("-from", dest="in_path", required=True)
+    pimp = sub.add_parser("import")
+    pimp.add_argument("-from", "--from", dest="in_path", required=True)
 
     return p.parse_args(argv)
 
@@ -86,14 +103,17 @@ def main(argv: Optional[List[str]] = None):
                   f"{tx.amount:>10} | {tx.memo}")
 
     elif ns.cmd == "search":
-        any_ = False
-        for tx in svc.search(date_from=ns.date_from, date_to=ns.date_to,
-                             category=ns.category, type_=ns.type, q=ns.q, tag=ns.tag):
-            any_ = True
-            print(f"{tx.id} | {tx.date} | {tx.type:<7} | {tx.category:<10} | "
-                  f"{tx.amount:>10} | {tx.memo}")
-        if not any_:
+        results = list(svc.search(
+            date_from=ns.date_from, date_to=ns.date_to,
+            category=ns.category, type_=ns.type, q=ns.q, tag=ns.tag,
+        ))
+        results.sort(key=lambda t: (t.date, t.id), reverse=True)
+        if not results:
             print("[정보] 결과 없음")
+        else:
+            for tx in results:
+                print(f"{tx.id} | {tx.date} | {tx.type:<7} | {tx.category:<10} | "
+                      f"{tx.amount:>10} | {tx.memo}")
 
     elif ns.cmd == "summary":
         s = svc.summary(ns.month, top=ns.top)
